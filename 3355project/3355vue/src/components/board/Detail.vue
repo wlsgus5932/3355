@@ -19,7 +19,7 @@
 		</table>
 
    <hr>
-    <div id="content" style="text-align:left; height: 500px" v-html="detail.content">
+    <div id="content" style="text-align:left; height: 600px" v-html="detail.content">
     </div>
 
     <div style="margin-right:40%;">

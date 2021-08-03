@@ -47,7 +47,7 @@
           rows="15"
           style="width:95%">
         </b-form-textarea> -->
-        <vue-editor id="editor" v-model="htmlForEditor" style="width:1350px;"> </vue-editor>
+        <vue-editor id="editor" v-model="htmlForEditor" style="width:1200px; height:500px;"> </vue-editor>
       </div>
       <br><br><br>
       <!-- 내용 입력 폼 끝 -->
