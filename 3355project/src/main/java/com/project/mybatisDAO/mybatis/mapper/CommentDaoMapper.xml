@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd%22%3E">
+<mapper namespace="com.project.mybatisDAO.CommentDao">
+
+<!-- 댓글 추가 -->
+ <select id="addComment" resultType="com.project.entity.Comment">
+  insert into comment(content, comment_user_id, comment_board_id) values (#{content}, #{uId}, #{bId});
+  update board set commentCount = commentCount+1 where board_id= ${bId};
+  </select>
+
+  <!-- 댓글 리스트 -->
+  <select id="getCommentList" resultType="com.project.entity.Comment">
+  select * from comment where comment_board_id = ${bId};
+  </select>
+  
+  <!-- 댓글 수 조회 -->
+  <select id="getCommentCount" resultType="Int">
+  select count(*) from comment where comment_board_id = ${bId};
+  </select>
+  
+  <!-- 댓글 아이디 체크 -->
+  <select id="commentCheck" resultType="int">
+  select comment_id from comment where comment_board_id = ${bId} and comment_id = ${cId};
+  </select>
+  
+  <!-- 댓글 삭제 -->
+  <select id="commentDelete">
+  update board set commentCount = (commentCount-(select count(*) from recomment 
+  where recomment_comment_id=${cId})-1) where board_id= ${bId};
+  delete from comment where comment_id = ${cId} and comment_board_id = ${bId};
+<!--   update board set commentCount = commentCount-1 where board_id= ${bId}; -->
+  </select>
+  
+  <!-- 댓글 수정 -->
+  <update id="updateComment">
+  update comment set content=#{content} where comment_id= #{cId};
+  </update>
+
+</mapper>

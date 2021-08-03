@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd%22%3E%22%3E">
+
+<mapper namespace="com.project.mybatisDAO.AccountDao">
+
+  <!-- 유저목록 가져오기(유저아이디 오름차순) -->
+  <select id="userList" resultType="com.project.entity.Users">
+    select * from Users order by userId desc
+  </select>
+
+  <!-- 특정유저 보기 -->
+  <select id="viewUser" resultType="Int">
+    select count() from Users where userId = #{param1} and social = #{param2}
+  </select>
+
+  <!-- 유저추가하기 -->
+  <insert id="addUser">
+      insert into Users (userId, userPw, userEmail, social) values (#{param1}, sha1(#{param2}), #{param3}, #{param4})
+  </insert>
+
+  <!-- 유저삭제하기 -->
+  <delete id="deleteUser">
+      delete from Users where userId=#{param1}
+  </delete>
+
+  <!-- 유저 로그인 -->
+  <select id="loginUser" resultType="Int">
+      select count() from Users where userId = #{param1} and userPw = sha1(#{param2})
+  </select>
+
+  <!-- 소셜 유저추가 -->
+  <insert id="addSocialUser">
+      insert into Users (userId, userEmail, social) values (#{param1}, #{param2}, #{param3})
+  </insert>
+
+  <!-- 소셜 유저보기 -->
+  <select id="viewSocialUser" resultType="Int">
+    select count(*) from Users where userId = #{param1} and userEmail = #{param2} and social = #{param3}
+  </select>
+
+  <!-- 유저이메일 보기 -->
+  <select id="viewUserEmail" resultType="String">
+    select userEmail from Users where userId = #{param1}
+  </select>
+
+  <!-- 비밀번호 재설정 -->
+  <update id="setUserPw">
+    update Users set userPw = sha1(#{param2}) where userId = #{param1}
+  </update>
+
+</mapper>

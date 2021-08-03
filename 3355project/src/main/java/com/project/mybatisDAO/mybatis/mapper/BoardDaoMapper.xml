@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.mybatisDAO.BoardDao">
+
+
+<!-- 어떤 쿼리문인지 꼭 주석처리 해주기 바람 
+        나중에 더 헷갈림   -: 진현 -->
+
+
+<!-- 게시판 리스트 -->
+  <select id="getList" resultType="com.project.entity.Board">
+<!--   select * from (select @rownum := @rownum+1 as rownum, board.*
+   from board, (select @rownum :=0) tmp order by date asc) t 
+   where category = #{boardlist} order by t.rownum desc limit ${page}, 10; -->
+   
+   select * from (select @rownum := @rownum+1 as rownum, board.* 
+   from board, (select @rownum :=0) tmp order by date asc) t 
+   where category = #{boardlist} and ${field} like '%${search}%' order by t.rownum desc limit ${page},10;
+  </select>
+  
+  <select id="getBestList" resultType="com.project.entity.Board">
+  select @rownum:=@rownum+1 as rownum, board.* from board, (select @rownum:=0) rownum 
+  where category=#{category} order by pop desc,  hit desc, commentCount desc limit 0,3;
+  </select>
+
+  
+ <!-- 게시판 페이징 -->
+  <select id="getCount" resultType="Int">
+  select count(*) count from board where category = #{category} and ${field} like '%${search}%'
+  </select>
+  
+  <!-- 게시판 상세페이지 + 조회수 증가 -->
+  <select id="getDetail" resultType="com.project.entity.Board">
+  select * from board where board_id = ${boardid};
+  update board set hit = hit+1 where board_id= ${boardid};
+  </select>
+  
+  <!-- 게시판 글쓰기 저장 -->
+  <select id="addWrite" resultType="com.project.entity.Board">
+  insert into board(title, content, hit, pop, category, user_id) values ('${param1}', '${param2}', ${param3}, ${param4}, '${param5}', '${param6}')
+  </select>
+  
+  <!-- 게시판 글 삭제 -->
+  <select id="deleteWrite" >
+  <!-- set foreign_key_checks = 0; -->
+  <!-- delete from comment where comment_board_id=${bId}; -->
+  delete from board where board_id=${bId};
+  <!-- set foreign_key_checks = 1; -->
+  </select>
+  
+  <!-- 카테고리 새글 조회 -->
+  <select id="getDayCount" resultType="Int">
+  select count(*) from board where category='${boardCount}' and date > DATE_SUB(NOW(),INTERVAL 24 hour);
+  </select>
+  
+  <!-- 좋아요 유무 데이터 비교 -->
+  <select id="popCheck" resultType="String">
+  select pop_board_id, pop_user_id from poplist where pop_board_id = #{bId} and pop_user_id = #{uId};
+  </select>
+  
+  <!-- 좋아요 추가 -->
+  <select id="addPop" resultType="String">
+  insert into poplist(pop_board_id, pop_user_id) values (${bId}, #{uId});
+  update board set pop = pop+1 where board_id= ${bId};
+  </select>
+  
+  <!-- 좋아요 삭제 -->
+  <select id="deletePop" resultType="String">
+  delete from poplist where pop_board_id = #{bId} and pop_user_id = #{uId};
+  update board set pop = pop-1 where board_id= ${bId};
+  </select>
+  
+  <!-- 게시글 수정 -->
+  <update id="update">
+  update board set title=#{param3}, category = #{param2}, content=#{param4} where board_id= #{param1};
+  </update>
+  
+  <!-- 댓글수 칼럼 조회 -->
+  <select id="commentCount" resultType="Int">
+  select commentCount from board where board_id = ${bId};
+  </select>
+  
+  <!-- 좋아요수 칼럼 조회 -->
+  <select id="countPop" resultType="Int">
+  select pop from board where board_id = ${bId};
+  </select>
+  
+ </mapper>

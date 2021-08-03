@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.mybatisDAO.ReCommentDao">
+
+<!-- 답글 추가 -->
+ <select id="addReComment">
+  insert into recomment(recommentContent, recomment_user_id, recomment_board_id, recomment_comment_id, recomment_ruser_id) values (#{content}, #{uId}, #{bId}, #{cId}, #{ruId});
+  update board set commentCount = commentCount+1 where board_id= ${bId};
+  </select>
+  
+  <!-- 답글 리스트 -->
+  <select id="getReCommentList" resultType="com.project.entity.ReComment">
+  select * from recomment where recomment_board_id = #{bId} order by recomment_date asc;
+  </select>
+  
+  <!-- 답글 삭제 -->
+  <select id= "deleteRecomment">
+  delete from recomment where recomment_id = ${rId} and recomment_board_id = ${bId};
+  update board set commentCount = commentCount-1 where board_id= ${bId};
+  </select>
+  
+  <!-- 답글 수정 -->
+  <update id="updateReComment">
+  update recomment set recommentContent=#{content} where recomment_id= #{rcId};
+  </update>
+
+</mapper>
