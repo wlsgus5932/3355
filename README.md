@@ -1,5 +1,5 @@
 http://3355project.duckdns.org/ <br/>
-Vue.js, spring boot, mysql를 활용한 웹입니다
+Vue.js, spring boot, mysql를 활용한 커뮤니티 웹입니다
 
 국비지원 자바 백엔드 과정 중 
 Vue.js도 독학하고
